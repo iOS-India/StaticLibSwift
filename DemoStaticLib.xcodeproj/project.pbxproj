@@ -6,6 +6,20 @@
 	objectVersion = 50;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		DB6905AF23953DC2001EE8DE /* UniversalLib */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = DB6905B023953DC2001EE8DE /* Build configuration list for PBXAggregateTarget "UniversalLib" */;
+			buildPhases = (
+				DB6905B323953DEA001EE8DE /* Run Script */,
+			);
+			dependencies = (
+			);
+			name = UniversalLib;
+			productName = UniversalLib;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		DB69059123950AF7001EE8DE /* DemoStaticLib.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB69059023950AF7001EE8DE /* DemoStaticLib.swift */; };
 		DB69059823950B39001EE8DE /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB69059723950B39001EE8DE /* Tokenizer.swift */; };
@@ -98,6 +112,9 @@
 					DB69058C23950AF7001EE8DE = {
 						CreatedOnToolsVersion = 11.1;
 					};
+					DB6905AF23953DC2001EE8DE = {
+						CreatedOnToolsVersion = 11.1;
+					};
 				};
 			};
 			buildConfigurationList = DB69058823950AF7001EE8DE /* Build configuration list for PBXProject "DemoStaticLib" */;
@@ -114,9 +131,31 @@
 			projectRoot = "";
 			targets = (
 				DB69058C23950AF7001EE8DE /* DemoStaticLib */,
+				DB6905AF23953DC2001EE8DE /* UniversalLib */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		DB6905B323953DEA001EE8DE /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Created by: Anurag Sharma\n#\n\n# 1: Declare variables\nRESULT_DIR=\"libUniversal\"\n\nBUILD_DIR_SIMULATOR=\"Debug-iphonesimulator\"\nBUILD_DIR_DEVICE=\"Debug-iphoneos\"\n\nLIB_NAME=\"DemoStaticLib\"\nLIB_BINARY_NAME=\"lib$LIB_NAME.a\"\nLIB_BINARY_NAME_SIMULATOR=\"lib$LIB_NAME-simulator.a\"\nLIB_BINARY_NAME_DEVICE=\"lib$LIB_NAME-device.a\"\n\nSWIFTMODULE_DIR=$LIB_NAME\".swiftmodule\"\n\n# 2: BUILD\n#\n# Build for simulator\nxcodebuild -target $LIB_NAME -configuration ${CONFIGURATION} -sdk iphonesimulator -arch x86_64 BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\"\n\n# Build for device\nxcodebuild -target $LIB_NAME ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphoneos  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\"\n\n# 3: OPERATE THE BINARIES\n#\n# Move to the build directory\ncd $BUILD_DIR\n\n# Completely delete the result of the previous build if any\n# Suppress the error to avoid unnecessary logs\nrm -rf $BUILD_DIR/$RESULT_DIR 2> /dev/null\n\n# Create a new result directory\nmkdir $RESULT_DIR\n\n# Copy simulator's binary file to the result dir and rename it\ncp ./$BUILD_DIR_SIMULATOR/$LIB_BINARY_NAME ./$RESULT_DIR/$LIB_BINARY_NAME_SIMULATOR\n\n# Copy devices's binary file to the result dir and rename it\ncp ./$BUILD_DIR_DEVICE/$LIB_BINARY_NAME ./$RESULT_DIR/$LIB_BINARY_NAME_DEVICE\n\n# Make the library \"fat\", means \"universal\"\nlipo -create ./$RESULT_DIR/$LIB_BINARY_NAME_SIMULATOR ./$RESULT_DIR/$LIB_BINARY_NAME_DEVICE -output ./$RESULT_DIR/$LIB_BINARY_NAME\n\n# Delete simulator's binary file\nrm ./$RESULT_DIR/$LIB_BINARY_NAME_SIMULATOR\n\n# Delete device's binary file\nrm ./$RESULT_DIR/$LIB_BINARY_NAME_DEVICE\n\n# 4: OPERATE SIWFTMODULE\n#\n# Create \".siwftmodule\" directory in the result directory\nmkdir $RESULT_DIR/$SWIFTMODULE_DIR\n\n# Copy 'swiftmodule' related to simulator\ncp -r $BUILD_DIR_SIMULATOR/$SWIFTMODULE_DIR $RESULT_DIR\n\n# Copy 'swiftmodule' related to mobile divice\ncp -r $BUILD_DIR_DEVICE/$SWIFTMODULE_DIR/* $RESULT_DIR/$SWIFTMODULE_DIR\n\n# Delete build directory\nrm -rf $PROJECT_DIR/build\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		DB69058923950AF7001EE8DE /* Sources */ = {
@@ -271,6 +310,26 @@
 			};
 			name = Release;
 		};
+		DB6905B123953DC2001EE8DE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development: sagarya12000@gmail.com (HNU8CZ9F33)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5JZ4R6V9NV;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		DB6905B223953DC2001EE8DE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development: sagarya12000@gmail.com (HNU8CZ9F33)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5JZ4R6V9NV;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -288,6 +347,15 @@
 			buildConfigurations = (
 				DB69059523950AF7001EE8DE /* Debug */,
 				DB69059623950AF7001EE8DE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DB6905B023953DC2001EE8DE /* Build configuration list for PBXAggregateTarget "UniversalLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB6905B123953DC2001EE8DE /* Debug */,
+				DB6905B223953DC2001EE8DE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
